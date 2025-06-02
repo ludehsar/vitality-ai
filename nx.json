@@ -2,7 +2,11 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "production": ["default"],
+    "production": [
+      "default",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.mjs"
+    ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
   "nxCloudId": "683da7f4bd93726277cfac6c",
@@ -19,6 +23,24 @@
           "buildDepsName": "build-deps",
           "watchDepsName": "watch-deps"
         }
+      }
+    },
+    {
+      "plugin": "@berenddeboer/nx-aws-cdk/plugin",
+      "options": {
+        "cdkTargetName": "cdk",
+        "synthTargetName": "synth",
+        "deployTargetName": "deploy",
+        "diffTargetName": "diff",
+        "rollbackTargetName": "rollback",
+        "watchTargetName": "watch",
+        "destroyTargetName": "destroy"
+      }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
       }
     }
   ]

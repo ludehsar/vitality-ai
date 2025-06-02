@@ -42,3 +42,12 @@ Thumbs.db
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+# environment variables
+*.env
+.env.*
+!.env.example
