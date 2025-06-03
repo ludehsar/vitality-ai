@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./stacks/infra"
+    },
+    {
+      "path": "./apps/mobile"
     }
   ]
 }
