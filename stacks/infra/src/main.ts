@@ -18,7 +18,5 @@ new AppStack(app, 'infra', {
   env: devEnv,
   stageName,
 });
-// Aspects.of(app).add(new AwsSolutionsChecks());
-// Aspects.of(app).add(new HIPAASecurityChecks());
 
 app.synth();
