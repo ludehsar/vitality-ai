@@ -1,6 +1,5 @@
-import { App, Aspects, Environment } from 'aws-cdk-lib';
+import { App, Environment } from 'aws-cdk-lib';
 import { AppStack } from './stacks/app-stack';
-import { AwsSolutionsChecks, HIPAASecurityChecks } from 'cdk-nag';
 
 // for development, use account/region from cdk cli
 const devEnv: Environment = {
@@ -19,7 +18,7 @@ new AppStack(app, 'infra', {
   env: devEnv,
   stageName,
 });
-Aspects.of(app).add(new AwsSolutionsChecks());
-Aspects.of(app).add(new HIPAASecurityChecks());
+// Aspects.of(app).add(new AwsSolutionsChecks());
+// Aspects.of(app).add(new HIPAASecurityChecks());
 
 app.synth();

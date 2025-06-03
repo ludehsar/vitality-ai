@@ -19,7 +19,6 @@
     "strictPropertyInitialization": false,
     "rootDir": "src",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
-    "emitDeclarationOnly": true,
     "outDir": "./dist"
   },
   "include": ["src/**/*"],
