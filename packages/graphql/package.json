@@ -1,0 +1,10 @@
+{
+  "name": "@vitality-ai/graphql",
+  "version": "0.0.1",
+  "private": true,
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "cd src && npx @aws-amplify/cli codegen",
+    "build": "tsc --project tsconfig.app.json && cp src/schema.graphql dist/schema.graphql"
+  }
+}

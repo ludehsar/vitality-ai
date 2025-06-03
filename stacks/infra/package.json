@@ -2,12 +2,20 @@
   "name": "infra",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "predeploy": "node build.mjs",
+    "deploy": "npx aws-cdk deploy --profile personal"
+  },
   "dependencies": {
     "aws-cdk-lib": "^2.179.0",
     "cdk-nag": "^2.36.7",
-    "constructs": "^10.3.0"
+    "constructs": "^10.3.0",
+    "@aws-appsync/utils": "^2.0.3",
+    "@vitality-ai/graphql": "workspace:*"
   },
   "devDependencies": {
-    "aws-cdk": "^2.179.0"
+    "aws-cdk": "^2.179.0",
+    "esbuild": "^0.25.5",
+    "glob": "^11.0.2"
   }
 }

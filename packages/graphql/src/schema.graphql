@@ -1,0 +1,89 @@
+type Query {
+  getUserProfile(id: String!): UserProfile @aws_api_key @aws_cognito_user_pools
+}
+
+type UserProfile {
+  PK: String!
+  SK: String!
+  fullName: String!
+  email: String!
+  phoneNumber: String
+  dateOfBirth: String
+  onboardingAssesment: UserOnboardingAssesment!
+  appSettings: UserAppSettings!
+}
+
+type UserOnboardingAssesment {
+  healthGoals: [String!]
+  gender: String
+  weight(unit: WeightUnit = KG): Float
+  age: Int
+  bloodType: BloodType
+  currentFitnessLevel: FitnessLevel
+  currentSleepLevel: SleepLevel
+  currentEmotionalState: EmotionalState
+  height(unit: HeightUnit = METER): Float
+  eatingHabits: EatingHabits
+}
+
+type UserAppSettings {
+  medicationReminder: Boolean!
+}
+
+enum WeightUnit {
+  KG
+  LB
+}
+
+enum HeightUnit {
+  METER
+  FEET
+}
+
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum FitnessLevel {
+  INACTIVE
+  INSUFFICIENTLY_ACTIVE
+  MINIMALLY_ACTIVE
+  HEALTH_ENHANCING
+  HIGH_ACTIVE
+}
+
+enum SleepLevel {
+  SEVERELY_IMPAIRED
+  MODERATELY_IMPAIRED
+  MILDLY_IMPAIRED
+  NORMAL
+  OPTIMAL
+}
+
+enum EmotionalState {
+  HAPPY
+  CALM
+  STRESSED
+  SAD
+  ANXIOUS
+  TIRED
+  EXCITED
+  NEUTRAL
+}
+
+enum EatingHabits {
+  NONE
+  BALANCED
+  LOW_CARB
+  VEGETARIAN
+  VEGAN
+  KETO
+  OTHER
+}

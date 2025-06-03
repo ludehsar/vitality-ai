@@ -30,6 +30,7 @@
       "options": {
         "cdkTargetName": "cdk",
         "synthTargetName": "synth",
+        "preDeployTargetName": "predeploy",
         "deployTargetName": "deploy",
         "diffTargetName": "diff",
         "rollbackTargetName": "rollback",
@@ -67,5 +68,10 @@
         "watchDepsTargetName": "watch-deps"
       }
     }
-  ]
+  ],
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"]
+    }
+  }
 }

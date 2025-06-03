@@ -1,0 +1,21 @@
+projects:
+  VitalityAI:
+    schemaPath: schema.graphql
+    includes:
+      - codegen/**/*.ts
+    excludes:
+      - ./amplify/**
+      - codegen/api.ts
+    extensions:
+      amplify:
+        codeGenTarget: typescript
+        generatedFileName: codegen/api.ts
+        docsFilePath: codegen
+        region: us-east-1
+        apiId: null
+        frontend: javascript
+        framework: react
+        maxDepth: 2
+extensions:
+  amplify:
+    version: 3
