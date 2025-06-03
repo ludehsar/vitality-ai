@@ -11,12 +11,6 @@ importers:
       '@berenddeboer/nx-aws-cdk':
         specifier: 3.0.0-alpha9
         version: 3.0.0-alpha9(@nx/devkit@21.1.2(nx@21.1.2(@swc-node/register@1.9.2(@swc/core@1.5.29(@swc/helpers@0.5.17))(@swc/types@0.1.21)(typescript@5.7.3))(@swc/core@1.5.29(@swc/helpers@0.5.17))))(@nx/eslint@20.8.2(@babel/traverse@7.27.4)(@swc-node/register@1.9.2(@swc/core@1.5.29(@swc/helpers@0.5.17))(@swc/types@0.1.21)(typescript@5.7.3))(@swc/core@1.5.29(@swc/helpers@0.5.17))(@zkochan/js-yaml@0.0.7)(eslint@9.28.0)(nx@21.1.2(@swc-node/register@1.9.2(@swc/core@1.5.29(@swc/helpers@0.5.17))(@swc/types@0.1.21)(typescript@5.7.3))(@swc/core@1.5.29(@swc/helpers@0.5.17))))
-      aws-cdk-lib:
-        specifier: ^2.179.0
-        version: 2.200.0(constructs@10.4.2)
-      constructs:
-        specifier: ^10.3.0
-        version: 10.4.2
       react:
         specifier: ~18.3.1
         version: 18.3.1
@@ -72,9 +66,6 @@ importers:
       '@types/react-dom':
         specifier: ~18.3.1
         version: 18.3.7(@types/react@18.3.23)
-      aws-cdk:
-        specifier: ^2.179.0
-        version: 2.1017.1
       eslint:
         specifier: ^9.8.0
         version: 9.28.0
@@ -149,7 +140,21 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(webpack@5.99.9)
 
-  stacks/infra: {}
+  stacks/infra:
+    dependencies:
+      aws-cdk-lib:
+        specifier: ^2.179.0
+        version: 2.200.0(constructs@10.4.2)
+      cdk-nag:
+        specifier: ^2.36.7
+        version: 2.36.7(aws-cdk-lib@2.200.0(constructs@10.4.2))(constructs@10.4.2)
+      constructs:
+        specifier: ^10.3.0
+        version: 10.4.2
+    devDependencies:
+      aws-cdk:
+        specifier: ^2.179.0
+        version: 2.1017.1
 
 packages:
 
@@ -2751,6 +2756,12 @@ packages:
 
   caniuse-lite@1.0.30001720:
     resolution: {integrity: sha512-Ec/2yV2nNPwb4DnTANEV99ZWwm3ZWfdlfkQbWSDDt+PsXEVYwlhPH8tdMaPunYTKKmz7AnHi2oNEi1GcmKCD8g==}
+
+  cdk-nag@2.36.7:
+    resolution: {integrity: sha512-I28WzenAfFkmiavoB0WUWI4+T68wA/BiHHZCaLbMtB6ZpVxCsmZ+nmlZ5dbHAxTyd5hZMRZ+zhlcj4zQ9OtteQ==}
+    peerDependencies:
+      aws-cdk-lib: ^2.156.0
+      constructs: ^10.0.5
 
   chalk@3.0.0:
     resolution: {integrity: sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==}
@@ -9986,6 +9997,11 @@ snapshots:
       lodash.uniq: 4.5.0
 
   caniuse-lite@1.0.30001720: {}
+
+  cdk-nag@2.36.7(aws-cdk-lib@2.200.0(constructs@10.4.2))(constructs@10.4.2):
+    dependencies:
+      aws-cdk-lib: 2.200.0(constructs@10.4.2)
+      constructs: 10.4.2
 
   chalk@3.0.0:
     dependencies:
