@@ -2,7 +2,10 @@
   "name": "@vitality-ai/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "lint": "pnpm exec nx run-many --target=lint --all",
+    "prepare": "husky"
+  },
   "private": true,
   "dependencies": {
     "@berenddeboer/nx-aws-cdk": "3.0.0-alpha9",
@@ -27,7 +30,12 @@
     "@types/react": "~18.3.12",
     "@types/react-dom": "~18.3.1",
     "eslint": "^9.8.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-prettier": "^5.4.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "husky": "^9.1.7",
     "nx": "21.1.2",
     "prettier": "^2.6.2",
     "react-test-renderer": "~18.3.1",
