@@ -9,11 +9,15 @@ type UserProfile {
   email: String!
   phoneNumber: String
   dateOfBirth: String
-  onboardingAssesment: UserOnboardingAssesment!
-  appSettings: UserAppSettings!
+  onboardingAssesment: UserOnboardingAssesment
+  appSettings: UserAppSettings
+  avatar: Media
+  location: String
 }
 
 type UserOnboardingAssesment {
+  PK: String!
+  SK: String!
   healthGoals: [String!]
   gender: String
   weight(unit: WeightUnit = KG): Float
@@ -27,7 +31,25 @@ type UserOnboardingAssesment {
 }
 
 type UserAppSettings {
+  PK: String!
+  SK: String!
   medicationReminder: Boolean!
+}
+
+type Media {
+  PK: String!
+  SK: String!
+  original: String!
+  thumbnail: String!
+}
+
+type HealthMetrics {
+  PK: String!
+  SK: String!
+  metricType: MetricType!
+  value: Float!
+  unit: String!
+  date: String!
 }
 
 enum WeightUnit {
@@ -86,4 +108,10 @@ enum EatingHabits {
   VEGAN
   KETO
   OTHER
+}
+
+enum MetricType {
+  WEIGHT
+  HEIGHT
+  BLOOD_TYPE
 }
