@@ -7,14 +7,19 @@ import {
   VerificationEmailStyle,
 } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
+import { Stage } from '../utils/enums';
+import { CommonLambdaFunction } from './common-lambda-function-construct';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import path from 'path';
+import { TableV2 } from 'aws-cdk-lib/aws-dynamodb';
 
 export interface AuthenticationConstructProps {
-  readonly stageName: string;
+  readonly stageName: Stage;
+  readonly ddbTable: TableV2;
 }
 
 export class AuthenticationConstruct extends Construct {
   public readonly userPool: UserPool;
-  public readonly userPoolClient: UserPoolClient;
 
   constructor(
     scope: Construct,
@@ -22,8 +27,36 @@ export class AuthenticationConstruct extends Construct {
     props: AuthenticationConstructProps
   ) {
     super(scope, id);
+    const postAuthenticationLambda = new CommonLambdaFunction(
+      this,
+      'VitalityAiPostAuthenticationLambda',
+      {
+        functionPath: path.join(
+          __dirname,
+          '..',
+          'lambdas',
+          'auth',
+          'post-auth.ts'
+        ),
+        functionName: 'vitality-ai-post-auth-lambda',
+        environmentVariables: {
+          DYNAMODB_TABLE_NAME: props.ddbTable.tableName,
+        },
+      }
+    );
+    props.ddbTable.grantWriteData(postAuthenticationLambda.function);
+    this.userPool = this.createUserPool(
+      props.stageName,
+      postAuthenticationLambda.function
+    );
+    this.createUserPoolClient();
+  }
 
-    this.userPool = new UserPool(this, 'AuthenticationUserPool', {
+  private createUserPool(
+    stageName: Stage,
+    postAuthenticationLambdaFunction: NodejsFunction
+  ) {
+    const userPool = new UserPool(this, 'AuthenticationUserPool', {
       selfSignUpEnabled: true,
       accountRecovery: AccountRecovery.PHONE_AND_EMAIL,
       userVerification: {
@@ -38,29 +71,38 @@ export class AuthenticationConstruct extends Construct {
           mutable: true,
         },
       },
-      deletionProtection: props.stageName === 'prod' ? true : false,
+      deletionProtection: stageName === Stage.PROD ? true : false,
+      deviceTracking: {
+        challengeRequiredOnNewDevice: true,
+        deviceOnlyRememberedOnUserPrompt: true,
+      },
+      lambdaTriggers: {
+        postAuthentication: postAuthenticationLambdaFunction,
+      },
       mfa: Mfa.OPTIONAL,
     });
 
-    this.userPoolClient = new UserPoolClient(
-      this,
-      'AuthenticationUserPoolClient',
-      {
-        userPool: this.userPool,
-        authFlows: {
-          userPassword: true,
-        },
-      }
-    );
-
     new CfnOutput(this, 'UserPoolId', {
       key: 'UserPoolId',
-      value: this.userPool.userPoolId,
+      value: userPool.userPoolId,
+    });
+
+    return userPool;
+  }
+
+  private createUserPoolClient() {
+    const client = new UserPoolClient(this, 'AuthenticationUserPoolClient', {
+      userPool: this.userPool,
+      authFlows: {
+        userPassword: true,
+      },
     });
 
     new CfnOutput(this, 'UserPoolClientId', {
       key: 'UserPoolClientId',
-      value: this.userPoolClient.userPoolClientId,
+      value: client.userPoolClientId,
     });
+
+    return client;
   }
 }

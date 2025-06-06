@@ -6,9 +6,10 @@ import {
   TableV2,
 } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
+import { Stage } from '../utils/enums';
 
 export interface BaseDynamoDBConstructProps extends Partial<TablePropsV2> {
-  readonly stageName: string;
+  readonly stageName: Stage;
 }
 
 export class BaseDynamoDBConstruct extends TableV2 {
@@ -20,8 +21,8 @@ export class BaseDynamoDBConstruct extends TableV2 {
     super(scope, id, {
       billing: Billing.onDemand(),
       removalPolicy:
-        stageName === 'prod' ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
-      deletionProtection: stageName === 'prod' ? true : false,
+        stageName === Stage.PROD ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+      deletionProtection: stageName === Stage.PROD ? true : false,
       partitionKey: {
         name: 'PK',
         type: AttributeType.STRING,

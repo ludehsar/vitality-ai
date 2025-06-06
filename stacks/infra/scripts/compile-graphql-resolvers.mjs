@@ -1,7 +1,10 @@
 import { build } from 'esbuild';
 import { glob } from 'glob';
+import { logger } from '@vitality-ai/utils';
+
 const files = await glob('src/graphql/resolvers/**/*.ts');
-console.log(files);
+
+logger.info(`Found ${files.length} files to compile: ${JSON.stringify(files)}`);
 
 await build({
   sourcemap: 'inline',

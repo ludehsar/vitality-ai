@@ -3,17 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "predeploy": "node build.mjs",
+    "predeploy": "node scripts/compile-graphql-resolvers.mjs",
     "deploy": "npx aws-cdk deploy --profile personal"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.179.0",
-    "cdk-nag": "^2.36.7",
-    "constructs": "^10.3.0",
     "@aws-appsync/utils": "^2.0.3",
-    "@vitality-ai/graphql": "workspace:*"
+    "@aws-sdk/client-dynamodb": "^3.825.0",
+    "@aws-sdk/util-dynamodb": "^3.825.0",
+    "@vitality-ai/graphql": "workspace:*",
+    "@vitality-ai/utils": "workspace:*",
+    "aws-cdk-lib": "^2.179.0",
+    "aws-lambda": "^1.0.7",
+    "cdk-nag": "^2.36.7",
+    "constructs": "^10.3.0"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
     "aws-cdk": "^2.179.0",
     "esbuild": "^0.25.5",
     "glob": "^11.0.2"

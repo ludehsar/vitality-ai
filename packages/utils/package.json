@@ -1,0 +1,13 @@
+{
+  "name": "@vitality-ai/utils",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.app.json"
+  },
+  "dependencies": {
+    "winston": "^3.17.0"
+  }
+}

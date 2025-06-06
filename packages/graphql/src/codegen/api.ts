@@ -8,16 +8,20 @@ export type UserProfile = {
   SK: string,
   fullName: string,
   email: string,
-  phoneNumber?: string | null,
+  phoneNumber: string,
   dateOfBirth?: string | null,
-  onboardingAssesment: UserOnboardingAssesment,
-  appSettings: UserAppSettings,
+  onboardingAssesment?: UserOnboardingAssesment | null,
+  appSettings?: UserAppSettings | null,
+  avatar?: Media | null,
+  location?: string | null,
+  gender?: string | null,
 };
 
 export type UserOnboardingAssesment = {
   __typename: "UserOnboardingAssesment",
+  PK: string,
+  SK: string,
   healthGoals?: Array< string > | null,
-  gender?: string | null,
   weight?: number | null,
   age?: number | null,
   bloodType?: BloodType | null,
@@ -83,7 +87,17 @@ export enum EatingHabits {
 
 export type UserAppSettings = {
   __typename: "UserAppSettings",
+  PK: string,
+  SK: string,
   medicationReminder: boolean,
+};
+
+export type Media = {
+  __typename: "Media",
+  PK: string,
+  SK: string,
+  original: string,
+  thumbnail: string,
 };
 
 export type GetUserProfileQueryVariables = {
@@ -97,12 +111,13 @@ export type GetUserProfileQuery = {
     SK: string,
     fullName: string,
     email: string,
-    phoneNumber?: string | null,
+    phoneNumber: string,
     dateOfBirth?: string | null,
-    onboardingAssesment:  {
+    onboardingAssesment?:  {
       __typename: "UserOnboardingAssesment",
+      PK: string,
+      SK: string,
       healthGoals?: Array< string > | null,
-      gender?: string | null,
       weight?: number | null,
       age?: number | null,
       bloodType?: BloodType | null,
@@ -111,10 +126,21 @@ export type GetUserProfileQuery = {
       currentEmotionalState?: EmotionalState | null,
       height?: number | null,
       eatingHabits?: EatingHabits | null,
-    },
-    appSettings:  {
+    } | null,
+    appSettings?:  {
       __typename: "UserAppSettings",
+      PK: string,
+      SK: string,
       medicationReminder: boolean,
-    },
+    } | null,
+    avatar?:  {
+      __typename: "Media",
+      PK: string,
+      SK: string,
+      original: string,
+      thumbnail: string,
+    } | null,
+    location?: string | null,
+    gender?: string | null,
   } | null,
 };

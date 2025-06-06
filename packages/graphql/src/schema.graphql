@@ -1,5 +1,5 @@
 type Query {
-  getUserProfile(id: String!): UserProfile @aws_api_key @aws_cognito_user_pools
+  getUserProfile(id: String!): UserProfile @aws_cognito_user_pools
 }
 
 type UserProfile {
@@ -7,19 +7,19 @@ type UserProfile {
   SK: String!
   fullName: String!
   email: String!
-  phoneNumber: String
+  phoneNumber: String!
   dateOfBirth: String
   onboardingAssesment: UserOnboardingAssesment
   appSettings: UserAppSettings
   avatar: Media
   location: String
+  gender: String
 }
 
 type UserOnboardingAssesment {
   PK: String!
   SK: String!
   healthGoals: [String!]
-  gender: String
   weight(unit: WeightUnit = KG): Float
   age: Int
   bloodType: BloodType

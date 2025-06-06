@@ -2,12 +2,6 @@
   "files": [],
   "references": [
     {
-      "path": "../../packages/utils"
-    },
-    {
-      "path": "../../packages/graphql"
-    },
-    {
       "path": "./tsconfig.app.json"
     }
   ],

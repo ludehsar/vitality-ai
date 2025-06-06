@@ -17,9 +17,9 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "outDir": "dist",
     "rootDir": "src",
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "outDir": "./dist"
   },
   "include": ["src/**/*"],
   "exclude": [
@@ -28,13 +28,5 @@
     "eslint.config.js",
     "eslint.config.cjs",
     "eslint.config.mjs"
-  ],
-  "references": [
-    {
-      "path": "../../packages/utils/tsconfig.app.json"
-    },
-    {
-      "path": "../../packages/graphql/tsconfig.app.json"
-    }
   ]
 }

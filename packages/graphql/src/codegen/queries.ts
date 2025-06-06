@@ -17,8 +17,9 @@ export const getUserProfile = /* GraphQL */ `query GetUserProfile($id: String!) 
     phoneNumber
     dateOfBirth
     onboardingAssesment {
+      PK
+      SK
       healthGoals
-      gender
       weight
       age
       bloodType
@@ -30,9 +31,20 @@ export const getUserProfile = /* GraphQL */ `query GetUserProfile($id: String!) 
       __typename
     }
     appSettings {
+      PK
+      SK
       medicationReminder
       __typename
     }
+    avatar {
+      PK
+      SK
+      original
+      thumbnail
+      __typename
+    }
+    location
+    gender
     __typename
   }
 }
