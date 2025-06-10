@@ -13,6 +13,7 @@ module.exports = function (api) {
             runtime: 'automatic',
           },
         ],
+        'nativewind/babel',
       ],
     };
   }
