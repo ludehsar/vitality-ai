@@ -1,6 +1,6 @@
 const { withNxMetro } = require('@nx/react-native');
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
-
+const { withNativeWind } = require('nativewind/metro');
 const defaultConfig = getDefaultConfig(__dirname);
 const { assetExts, sourceExts } = defaultConfig.resolver;
 
@@ -29,4 +29,6 @@ module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
   extensions: [],
   // Specify folders to watch, in addition to Nx defaults (workspace libraries and node_modules)
   watchFolders: [],
-});
+}).then((config) =>
+  withNativeWind(config, { input: './src/styles/global.css' })
+);
