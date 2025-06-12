@@ -9,10 +9,7 @@
     "moduleResolution": "bundler",
     "noUnusedLocals": false,
     "lib": ["dom"],
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
   },
   "files": ["../../node_modules/@nx/react-native/typings/svg.d.ts"],
   "exclude": [

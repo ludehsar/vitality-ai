@@ -1,15 +1,15 @@
-import { PostAuthenticationTriggerHandler } from 'aws-lambda';
+import { PostConfirmationTriggerHandler } from 'aws-lambda';
 import { logger } from '@vitality-ai/utils';
 import { DynamoDB, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
 import { marshall } from '@aws-sdk/util-dynamodb';
 
-export const handler: PostAuthenticationTriggerHandler = async (
+export const handler: PostConfirmationTriggerHandler = async (
   event,
   _context,
   callback
 ) => {
   logger.info(
-    'Authentication successful -> Launching Post Authentication Lambda Trigger'
+    'Authentication successful -> Launching Post Confirmation Lambda Trigger'
   );
 
   try {
@@ -23,6 +23,9 @@ export const handler: PostAuthenticationTriggerHandler = async (
           PK: `USER#${event.request.userAttributes.sub}`,
           SK: `USER#${event.request.userAttributes.sub}`,
           email: event.request.userAttributes.email,
+          givenName: event.request.userAttributes.given_name,
+          familyName: event.request.userAttributes.family_name,
+          phoneNumber: event.request.userAttributes.phone_number,
           createdAt: date.toISOString(),
           updatedAt: date.toISOString(),
         }),

@@ -5,7 +5,8 @@ type Query {
 type UserProfile {
   PK: String!
   SK: String!
-  fullName: String!
+  givenName: String!
+  familyName: String
   email: String!
   phoneNumber: String!
   dateOfBirth: String
@@ -14,6 +15,8 @@ type UserProfile {
   avatar: Media
   location: String
   gender: String
+  createdAt: String!
+  updatedAt: String!
 }
 
 type UserOnboardingAssesment {

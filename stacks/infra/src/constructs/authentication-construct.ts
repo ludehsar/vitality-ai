@@ -64,11 +64,24 @@ export class AuthenticationConstruct extends Construct {
       },
       autoVerify: {
         email: true,
+        phone: true,
       },
       standardAttributes: {
         email: {
           required: true,
           mutable: true,
+        },
+        givenName: {
+          mutable: true,
+          required: true,
+        },
+        familyName: {
+          mutable: true,
+          required: true,
+        },
+        phoneNumber: {
+          mutable: true,
+          required: true,
         },
       },
       deletionProtection: stageName === Stage.PROD ? true : false,
@@ -77,7 +90,7 @@ export class AuthenticationConstruct extends Construct {
         deviceOnlyRememberedOnUserPrompt: true,
       },
       lambdaTriggers: {
-        postAuthentication: postAuthenticationLambdaFunction,
+        postConfirmation: postAuthenticationLambdaFunction,
       },
       mfa: Mfa.OPTIONAL,
     });
@@ -95,6 +108,7 @@ export class AuthenticationConstruct extends Construct {
       userPool: this.userPool,
       authFlows: {
         userPassword: true,
+        userSrp: true,
       },
     });
 
