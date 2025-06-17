@@ -109,25 +109,24 @@ const CheckboxGroup = UICheckbox.Group;
 type ICheckboxProps = React.ComponentPropsWithoutRef<typeof UICheckbox> &
   VariantProps<typeof checkboxStyle>;
 
-const Checkbox: React.ForwardRefExoticComponent<
-  ICheckboxProps & React.RefAttributes<React.ComponentRef<typeof UICheckbox>>
-> = React.forwardRef<React.ComponentRef<typeof UICheckbox>, ICheckboxProps>(
-  function Checkbox({ className, size = 'md', ...props }, ref) {
-    return (
-      <UICheckbox
-        className={checkboxStyle({
-          class: className,
-          size,
-        })}
-        {...props}
-        context={{
-          size,
-        }}
-        ref={ref}
-      />
-    );
-  }
-);
+const Checkbox = React.forwardRef<
+  React.ComponentRef<typeof UICheckbox>,
+  ICheckboxProps
+>(function Checkbox({ className, size = 'md', ...props }, ref) {
+  return (
+    <UICheckbox
+      className={checkboxStyle({
+        class: className,
+        size,
+      })}
+      {...props}
+      context={{
+        size,
+      }}
+      ref={ref}
+    />
+  );
+});
 
 type ICheckboxIndicatorProps = React.ComponentPropsWithoutRef<
   typeof UICheckbox.Indicator
