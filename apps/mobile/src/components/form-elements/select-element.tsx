@@ -25,7 +25,7 @@ import {
 } from '../ui/select';
 
 export interface SelectElementProps extends TextInputProps {
-  label: string;
+  label?: string;
   helperText?: string;
   name: string;
   options: { label: string; value: string }[];
@@ -50,9 +50,11 @@ const SelectElement: React.FC<SelectElementProps> = ({
           isInvalid={fieldState.invalid}
           isReadOnly={fieldState.isValidating}
         >
-          <FormControlLabel>
-            <FormControlLabelText>{label}</FormControlLabelText>
-          </FormControlLabel>
+          {label && (
+            <FormControlLabel>
+              <FormControlLabelText>{label}</FormControlLabelText>
+            </FormControlLabel>
+          )}
           <Select onValueChange={onChange} selectedValue={field.value}>
             <SelectTrigger>
               <SelectInput {...props} />

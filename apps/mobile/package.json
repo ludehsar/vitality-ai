@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@aws-amplify/react-native": "^1.1.10",
+    "@aws-amplify/ui": "^6.10.3",
     "@aws-amplify/ui-react-native": "^2.5.3",
     "@expo/html-elements": "0.4.2",
     "@gluestack-ui/accordion": "^1.0.14",

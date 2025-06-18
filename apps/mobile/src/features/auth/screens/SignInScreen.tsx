@@ -7,100 +7,70 @@ import {
 import { Heading } from '../../../components/ui/heading';
 import InputElement from '../../../components/form-elements/input-element';
 import { FormProvider, useForm } from 'react-hook-form';
-import { signInSchema, SignInSchema } from '../schema/auth.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AuthError, signIn, SignInInput } from 'aws-amplify/auth';
 import { HStack } from '../../../components/ui/hstack';
-import { useHandleAuthenticationNextStep } from '../hooks/useHandleAuthenticationNextStep';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../../navigations/RootStack';
+import { SignInProps } from '@aws-amplify/ui-react-native';
+import { Alert, AlertIcon, AlertText } from '../../../components/ui/alert';
+import React from 'react';
+import { InfoIcon } from '../../../components/ui/icon';
 
-const errorMessages = {
-  UserNotConfirmedException: {
-    field: 'email',
-    message: 'User is not confirmed',
-  },
-  UserNotFoundException: { field: 'email', message: 'User not found' },
-  NotAuthorizedException: {
-    field: 'password',
-    message: 'Invalid email or password',
-  },
-};
-
-export const SignInScreen = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { handleSignInNextStep } = useHandleAuthenticationNextStep();
-  const form = useForm<SignInSchema>({
-    resolver: zodResolver(signInSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+export const SignInScreen: React.FC<SignInProps> = ({
+  error: errorMessage,
+  fields,
+  handleSubmit,
+  isPending,
+  toSignUp,
+  toForgotPassword,
+  hasValidationErrors,
+  validationErrors,
+}) => {
+  const form = useForm({
+    defaultValues: fields.map((field) => ({
+      [field.name]: field.value,
+    })),
   });
 
-  const onSubmit = async (data: SignInSchema) => {
-    const requestInput: SignInInput = {
-      username: data.email,
-      password: data.password,
-    };
-    try {
-      const response = await signIn(requestInput);
-      handleSignInNextStep(response.nextStep);
-    } catch (error) {
-      if (error instanceof AuthError && error.name in errorMessages) {
-        const { field, message } =
-          errorMessages[error.name as keyof typeof errorMessages];
-        form.setError(field as keyof SignInSchema, {
-          message,
+  React.useEffect(() => {
+    if (hasValidationErrors && validationErrors) {
+      Object.entries(validationErrors).forEach(([key, value]) => {
+        form.setError(key as `${number}.${string}`, {
+          message: Array.isArray(value) ? value.join(', ') : value,
         });
-      } else {
-        form.setError('email', {
-          message: 'An unknown error occurred',
-        });
-      }
-      console.error('Error signing in', error);
+      });
     }
-  };
+  }, [hasValidationErrors, validationErrors]);
 
   return (
     <FormProvider {...form}>
       <VStack space="md">
         <Heading>Sign In</Heading>
-        <InputElement
-          name="email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          label="Email"
-          placeholder="Enter Email"
-        />
-        <InputElement
-          name="password"
-          label="Password"
-          keyboardType="visible-password"
-          textContentType="password"
-          placeholder="Enter Password"
-          isPassword
-        />
+        {fields.map(({ name, label, type, ...field }) => (
+          <InputElement
+            key={name}
+            name={name}
+            label={label}
+            isPassword={type === 'password'}
+            {...field}
+          />
+        ))}
         <Button
           className="mt-4"
-          onPress={form.handleSubmit(onSubmit)}
-          disabled={form.formState.isSubmitting}
+          onPress={form.handleSubmit(handleSubmit)}
+          disabled={isPending}
         >
-          {form.formState.isSubmitting && <ButtonSpinner />}
-          <ButtonText>Sign In</ButtonText>
+          {isPending && <ButtonSpinner />}
+          <ButtonText>{isPending ? 'Submitting...' : 'Sign In'}</ButtonText>
         </Button>
+        {errorMessage && (
+          <Alert action="error" variant="solid">
+            <AlertIcon as={InfoIcon} />
+            <AlertText>{errorMessage}</AlertText>
+          </Alert>
+        )}
         <HStack className="justify-between">
-          <Button
-            variant="link"
-            onPress={() => navigation.navigate('ResetPassword')}
-          >
+          <Button variant="link" onPress={toForgotPassword}>
             <ButtonText>Forgot Password?</ButtonText>
           </Button>
-          <Button
-            variant="link"
-            onPress={() => navigation.navigate('SignUp')}
-            className="text-primary"
-          >
+          <Button variant="link" onPress={toSignUp} className="text-primary">
             <ButtonText>Create an account</ButtonText>
           </Button>
         </HStack>

@@ -15,7 +15,7 @@ import { EyeIcon, EyeOffIcon } from '../ui/icon';
 import { useState } from 'react';
 
 export interface InputElementProps extends TextInputProps {
-  label: string;
+  label?: string;
   helperText?: string;
   name: string;
   isPassword?: boolean;
@@ -47,9 +47,11 @@ const InputElement: React.FC<InputElementProps> = ({
           isInvalid={fieldState.invalid}
           isReadOnly={fieldState.isValidating}
         >
-          <FormControlLabel>
-            <FormControlLabelText>{label}</FormControlLabelText>
-          </FormControlLabel>
+          {label && (
+            <FormControlLabel>
+              <FormControlLabelText>{label}</FormControlLabelText>
+            </FormControlLabel>
+          )}
           <Input>
             <InputField
               secureTextEntry={isPassword && !shouldShowPassword}

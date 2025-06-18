@@ -7,88 +7,45 @@ import {
   ButtonSpinner,
   ButtonText,
 } from '../../../components/ui/button';
-import { AuthError, confirmSignIn } from 'aws-amplify/auth';
-import { useHandleAuthenticationNextStep } from '../hooks/useHandleAuthenticationNextStep';
 import RadioElement from '../../../components/form-elements/radio-element';
 import { HStack } from '../../../components/ui/hstack';
-import {
-  selectMfaTypeSchema,
-  SelectMfaTypeSchema,
-} from '../schema/auth.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  NavigationProp,
-  RouteProp,
-  useNavigation,
-} from '@react-navigation/native';
-import { RootStackParamList } from '../../../navigations/RootStack';
+import { SelectMfaTypeProps } from '@aws-amplify/ui-react-native';
+import { Alert, AlertIcon, AlertText } from '../../../components/ui/alert';
+import { InfoIcon } from '../../../components/ui/icon';
 
-const errorMessages = {
-  NotAuthorizedException: {
-    field: 'mfaType',
-    message: 'Not authorized',
-  },
-  InvalidParameterException: {
-    field: 'mfaType',
-    message: 'Invalid MFA type',
-  },
-};
-
-export type SelectMfaTypeScreenProps = {
-  route: RouteProp<RootStackParamList, 'SelectMfaType'>;
-};
-
-export const SelectMfaTypeScreen = ({
-  route: {
-    params: { allowedMfaTypes },
-  },
-}: SelectMfaTypeScreenProps) => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const form = useForm<SelectMfaTypeSchema>({
-    resolver: zodResolver(selectMfaTypeSchema),
-    defaultValues: { mfaType: allowedMfaTypes?.[0] ?? '' },
-  });
-  const { handleSignInNextStep } = useHandleAuthenticationNextStep();
-
-  const onSubmit = async (data: SelectMfaTypeSchema) => {
-    try {
-      const response = await confirmSignIn({ challengeResponse: data.mfaType });
-      handleSignInNextStep(response.nextStep);
-    } catch (error) {
-      console.error(error);
-      if (error instanceof AuthError && error.name in errorMessages) {
-        const { field, message } =
-          errorMessages[error.name as keyof typeof errorMessages];
-        form.setError(field as keyof typeof form.formState.errors, {
-          message,
-        });
-      } else {
-        form.setError('mfaType', { message: 'An unknown error occurred' });
-      }
-    }
-  };
+export const SelectMfaTypeScreen: React.FC<SelectMfaTypeProps> = ({
+  error: errorMessage,
+  fields,
+  handleSubmit,
+  isPending,
+  toSignIn,
+}) => {
+  const form = useForm();
 
   return (
     <FormProvider {...form}>
       <VStack space="md">
         <Heading>Select MFA Type</Heading>
         <RadioElement
-          name="mfaType"
-          label="MFA Type"
-          options={allowedMfaTypes.map((type) => ({
-            label: type,
-            value: type,
+          name="mfa_type"
+          label="Select MFA Type"
+          options={fields.map(({ value, label }) => ({
+            label: label ?? '',
+            value: value,
           }))}
         />
-        <Button
-          onPress={form.handleSubmit(onSubmit)}
-          disabled={form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting && <ButtonSpinner />}
-          <ButtonText>Continue</ButtonText>
+        <Button onPress={form.handleSubmit(handleSubmit)} disabled={isPending}>
+          {isPending && <ButtonSpinner />}
+          <ButtonText>{isPending ? 'Submitting...' : 'Continue'}</ButtonText>
         </Button>
+        {errorMessage && (
+          <Alert action="error" variant="solid">
+            <AlertIcon as={InfoIcon} />
+            <AlertText>{errorMessage}</AlertText>
+          </Alert>
+        )}
         <HStack>
-          <Button variant="link" onPress={() => navigation.navigate('SignIn')}>
+          <Button variant="link" onPress={toSignIn}>
             <ButtonText>Back to Sign In</ButtonText>
           </Button>
         </HStack>

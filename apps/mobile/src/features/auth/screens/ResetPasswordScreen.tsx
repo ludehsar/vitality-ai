@@ -7,80 +7,66 @@ import {
 import { Heading } from '../../../components/ui/heading';
 import InputElement from '../../../components/form-elements/input-element';
 import { FormProvider, useForm } from 'react-hook-form';
-import { AuthError, resetPassword, ResetPasswordInput } from 'aws-amplify/auth';
 import { HStack } from '../../../components/ui/hstack';
-import {
-  resetPasswordSchema,
-  ResetPasswordSchema,
-} from '../schema/auth.schema';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useHandleAuthenticationNextStep } from '../hooks/useHandleAuthenticationNextStep';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../../navigations/RootStack';
+import { ForgotPasswordProps } from '@aws-amplify/ui-react-native';
+import { Alert, AlertIcon, AlertText } from '../../../components/ui/alert';
+import { InfoIcon } from '../../../components/ui/icon';
+import React from 'react';
 
-const errorMessages = {
-  UserNotFoundException: {
-    field: 'email',
-    message: 'User not found',
-  },
-  NotAuthorizedException: {
-    field: 'email',
-    message: 'Not authorized',
-  },
-};
-
-export const ResetPasswordScreen = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { handleResetPasswordNextStep } = useHandleAuthenticationNextStep();
-  const form = useForm<ResetPasswordSchema>({
-    resolver: zodResolver(resetPasswordSchema),
-    defaultValues: {
-      email: '',
-    },
+export const ResetPasswordScreen: React.FC<ForgotPasswordProps> = ({
+  error: errorMessage,
+  fields,
+  handleSubmit,
+  isPending,
+  toSignIn,
+  hasValidationErrors,
+  validationErrors,
+}) => {
+  const form = useForm({
+    defaultValues: fields.map((field) => ({
+      [field.name]: field.value,
+    })),
   });
 
-  const onSubmit = async (data: ResetPasswordSchema) => {
-    const requestData: ResetPasswordInput = {
-      username: data.email,
-    };
-    try {
-      const response = await resetPassword(requestData);
-      handleResetPasswordNextStep(response.nextStep);
-    } catch (error) {
-      console.error(error);
-      if (error instanceof AuthError && error.name in errorMessages) {
-        const { field, message } =
-          errorMessages[error.name as keyof typeof errorMessages];
-        form.setError(field as keyof typeof form.formState.errors, {
-          message,
+  React.useEffect(() => {
+    if (hasValidationErrors && validationErrors) {
+      Object.entries(validationErrors).forEach(([key, value]) => {
+        form.setError(key as `${number}.${string}`, {
+          message: Array.isArray(value) ? value.join(', ') : value,
         });
-      } else {
-        form.setError('email', { message: 'An unknown error occurred' });
-      }
+      });
     }
-  };
+  }, [hasValidationErrors, validationErrors]);
 
   return (
     <FormProvider {...form}>
       <VStack space="md">
         <Heading>Forgot Password</Heading>
-        <InputElement
-          name="email"
-          label="Email"
-          placeholder="Enter Email"
-          keyboardType="email-address"
-          textContentType="emailAddress"
-        />
+        {fields.map(({ name, label, type, ...field }) => (
+          <InputElement
+            key={name}
+            name={name}
+            label={label}
+            isPassword={type === 'password'}
+            {...field}
+          />
+        ))}
         <Button
           className="mt-4"
-          onPress={form.handleSubmit(onSubmit)}
-          disabled={form.formState.isSubmitting}
+          onPress={form.handleSubmit(handleSubmit)}
+          disabled={isPending}
         >
-          {form.formState.isSubmitting && <ButtonSpinner />}
+          {isPending && <ButtonSpinner />}
           <ButtonText>Send Code</ButtonText>
         </Button>
+        {errorMessage && (
+          <Alert action="error" variant="solid">
+            <AlertIcon as={InfoIcon} />
+            <AlertText>{errorMessage}</AlertText>
+          </Alert>
+        )}
         <HStack className="justify-between">
-          <Button variant="link" onPress={() => navigation.navigate('SignIn')}>
+          <Button variant="link" onPress={toSignIn}>
             <ButtonText>Back to Sign In</ButtonText>
           </Button>
         </HStack>

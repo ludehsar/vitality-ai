@@ -2,25 +2,23 @@ import InputElement from '../../../components/form-elements/input-element';
 import { FormProvider, useForm } from 'react-hook-form';
 import { VStack } from '../../../components/ui/vstack';
 import { Heading } from '../../../components/ui/heading';
-import { Text } from '../../../components/ui/text';
 import {
   Button,
   ButtonSpinner,
   ButtonText,
 } from '../../../components/ui/button';
+import { ConfirmSignInProps } from '@aws-amplify/ui-react-native';
+import { Alert, AlertIcon, AlertText } from '../../../components/ui/alert';
+import { InfoIcon } from '../../../components/ui/icon';
 import { HStack } from '../../../components/ui/hstack';
 import React from 'react';
-import { ConfirmSignUpProps } from '@aws-amplify/ui-react-native';
-import { InfoIcon } from '../../../components/ui/icon';
-import { Alert, AlertIcon, AlertText } from '../../../components/ui/alert';
 
-export const ConfirmSignUpScreen: React.FC<ConfirmSignUpProps> = ({
+export const ConfirmSignInScreen: React.FC<ConfirmSignInProps> = ({
   error: errorMessage,
   fields,
   handleSubmit,
   isPending,
-  resendCode,
-  codeDeliveryDetails,
+  toSignIn,
   hasValidationErrors,
   validationErrors,
 }) => {
@@ -43,13 +41,7 @@ export const ConfirmSignUpScreen: React.FC<ConfirmSignUpProps> = ({
   return (
     <FormProvider {...form}>
       <VStack space="md">
-        <Heading>Confirm Sign Up</Heading>
-        {codeDeliveryDetails && (
-          <Text>
-            A code has been sent to {codeDeliveryDetails.Destination} via{' '}
-            {codeDeliveryDetails.DeliveryMedium}
-          </Text>
-        )}
+        <Heading>Confirm Sign In</Heading>
         {fields.map(({ name, label, type, ...field }) => (
           <InputElement
             key={name}
@@ -74,8 +66,8 @@ export const ConfirmSignUpScreen: React.FC<ConfirmSignUpProps> = ({
           </Alert>
         )}
         <HStack className="justify-between">
-          <Button variant="link" onPress={resendCode}>
-            <ButtonText>Resend Code</ButtonText>
+          <Button variant="link" onPress={toSignIn}>
+            <ButtonText>Back to Sign In</ButtonText>
           </Button>
         </HStack>
       </VStack>

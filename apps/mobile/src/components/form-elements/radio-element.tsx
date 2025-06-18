@@ -18,7 +18,7 @@ import {
 } from '../ui/radio';
 
 export interface RadioElementProps {
-  label: string;
+  label?: string;
   helperText?: string;
   name: string;
   options: { label: string; value: string }[];
@@ -42,9 +42,11 @@ const RadioElement: React.FC<RadioElementProps> = ({
           isInvalid={fieldState.invalid}
           isReadOnly={fieldState.isValidating}
         >
-          <FormControlLabel>
-            <FormControlLabelText>{label}</FormControlLabelText>
-          </FormControlLabel>
+          {label && (
+            <FormControlLabel>
+              <FormControlLabelText>{label}</FormControlLabelText>
+            </FormControlLabel>
+          )}
           <RadioGroup {...field}>
             {options.map((option) => (
               <Radio key={option.value} value={option.value}>

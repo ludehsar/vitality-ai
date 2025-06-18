@@ -1,143 +1,77 @@
 import InputElement from '../../../components/form-elements/input-element';
 import { FormProvider, useForm } from 'react-hook-form';
-import {
-  AuthError,
-  confirmResetPassword,
-  ConfirmResetPasswordInput,
-  resendSignUpCode,
-} from 'aws-amplify/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  confirmResetPasswordSchema,
-  ConfirmResetPasswordSchema,
-} from '../schema/auth.schema';
 import { VStack } from '../../../components/ui/vstack';
 import { Heading } from '../../../components/ui/heading';
-import { Text } from '../../../components/ui/text';
 import {
   Button,
   ButtonSpinner,
   ButtonText,
 } from '../../../components/ui/button';
 import { HStack } from '../../../components/ui/hstack';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../../navigations/RootStack';
+import { ConfirmResetPasswordProps } from '@aws-amplify/ui-react-native';
+import { Alert, AlertIcon, AlertText } from '../../../components/ui/alert';
+import { InfoIcon } from '../../../components/ui/icon';
+import React from 'react';
 
-const errorMessages = {
-  InvalidParameterException: {
-    field: 'code',
-    message: 'Invalid code',
-  },
-  ExpiredCodeException: {
-    field: 'code',
-    message: 'Code expired',
-  },
-};
-
-export type ConfirmResetPasswordScreenProps = {
-  route: RouteProp<RootStackParamList, 'ConfirmResetPassword'>;
-};
-
-export const ConfirmResetPasswordScreen = ({
-  route: {
-    params: { codeDeliveryDetails, username },
-  },
-}: ConfirmResetPasswordScreenProps) => {
-  const form = useForm<ConfirmResetPasswordSchema>({
-    resolver: zodResolver(confirmResetPasswordSchema),
-    defaultValues: {
-      code: '',
-      newPassword: '',
-      confirmNewPassword: '',
-    },
+export const ConfirmResetPasswordScreen: React.FC<
+  ConfirmResetPasswordProps
+> = ({
+  error: errorMessage,
+  fields,
+  handleSubmit,
+  isPending,
+  resendCode,
+  validationErrors,
+  hasValidationErrors,
+}) => {
+  const form = useForm({
+    defaultValues: fields.map((field) => ({
+      [field.name]: field.value,
+    })),
   });
 
-  const onSubmit = async (data: ConfirmResetPasswordSchema) => {
-    if (!username) return;
-    if (data.newPassword !== data.confirmNewPassword) {
-      form.setError('confirmNewPassword', {
-        message: 'Passwords do not match',
+  React.useEffect(() => {
+    if (hasValidationErrors && validationErrors) {
+      Object.entries(validationErrors).forEach(([key, value]) => {
+        form.setError(key as `${number}.${string}`, {
+          message: Array.isArray(value) ? value.join(', ') : value,
+        });
       });
-      return;
     }
-    const requestData: ConfirmResetPasswordInput = {
-      confirmationCode: data.code,
-      newPassword: data.newPassword,
-      username,
-    };
-    try {
-      await confirmResetPassword(requestData);
-    } catch (error) {
-      console.error(error);
-      if (error instanceof AuthError && error.name in errorMessages) {
-        const { field, message } =
-          errorMessages[error.name as keyof typeof errorMessages];
-        form.setError(field as keyof ConfirmResetPasswordSchema, {
-          message,
-        });
-      } else {
-        form.setError('code', {
-          message: 'An unknown error occurred',
-        });
-      }
-    }
-  };
-
-  const handleResendCode = async () => {
-    if (!username) {
-      form.setError('code', {
-        message: 'Invalid authentication',
-      });
-      return;
-    }
-    try {
-      await resendSignUpCode({ username });
-    } catch (error) {
-      console.error(error);
-      if (error instanceof AuthError && error.name in errorMessages) {
-        const { field, message } =
-          errorMessages[error.name as keyof typeof errorMessages];
-        form.setError(field as keyof ConfirmResetPasswordSchema, {
-          message,
-        });
-      } else {
-        form.setError('code', {
-          message: 'An unknown error occurred',
-        });
-      }
-    }
-  };
+  }, [hasValidationErrors, validationErrors]);
 
   return (
     <FormProvider {...form}>
       <VStack space="md">
-        <Heading>
-          Verify{' '}
-          {codeDeliveryDetails?.attributeName === 'email'
-            ? 'Email'
-            : 'Phone Number'}
-        </Heading>
-        <Text>
-          A code has been sent to {codeDeliveryDetails?.destination} via{' '}
-          {codeDeliveryDetails?.deliveryMedium}
-        </Text>
-
-        <InputElement name="code" label="Code" />
+        <Heading>Confirm Reset Password</Heading>
+        {fields.map(({ name, label, type, ...field }) => (
+          <InputElement
+            key={name}
+            name={name}
+            label={label}
+            isPassword={type === 'password'}
+            {...field}
+          />
+        ))}
         <Button
           className="mt-4"
-          onPress={form.handleSubmit(onSubmit)}
-          disabled={form.formState.isSubmitting}
+          onPress={form.handleSubmit(handleSubmit)}
+          disabled={isPending}
         >
-          {form.formState.isSubmitting && <ButtonSpinner />}
-          <ButtonText>Confirm</ButtonText>
+          {isPending && <ButtonSpinner />}
+          <ButtonText>{isPending ? 'Submitting...' : 'Confirm'}</ButtonText>
         </Button>
-        {username && (
-          <HStack className="justify-between">
-            <Button variant="link" onPress={handleResendCode}>
-              <ButtonText>Resend Code</ButtonText>
-            </Button>
-          </HStack>
+        {errorMessage && (
+          <Alert action="error" variant="solid">
+            <AlertIcon as={InfoIcon} />
+            <AlertText>{errorMessage}</AlertText>
+          </Alert>
         )}
+        <HStack className="justify-between">
+          <Button variant="link" onPress={resendCode}>
+            <ButtonText>Resend Code</ButtonText>
+          </Button>
+        </HStack>
       </VStack>
     </FormProvider>
   );
