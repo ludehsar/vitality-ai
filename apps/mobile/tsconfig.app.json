@@ -3,17 +3,13 @@
   "compilerOptions": {
     "outDir": "dist",
     "types": ["node"],
-    "rootDir": "src",
+    "rootDir": ".",
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
     "noUnusedLocals": false,
     "lib": ["dom"],
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@/tailwind.config": ["./tailwind.config.ts"]
-    }
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
   },
   "files": ["../../node_modules/@nx/react-native/typings/svg.d.ts"],
   "exclude": [
@@ -34,6 +30,7 @@
     "src/**/*.tsx",
     "src/**/*.js",
     "src/**/*.jsx",
-    "nativewind-env.d.ts"
+    "nativewind-env.d.ts",
+    "tailwind.config.ts"
   ]
 }

@@ -12,6 +12,7 @@ import { SignUpProps } from '@aws-amplify/ui-react-native';
 import React from 'react';
 import { Alert, AlertIcon, AlertText } from '../../../components/ui/alert';
 import { InfoIcon } from '../../../components/ui/icon';
+import { getKeyboardType } from '../../../utils/helper';
 
 export const SignUpScreen: React.FC<SignUpProps> = ({
   error: errorMessage,
@@ -48,6 +49,7 @@ export const SignUpScreen: React.FC<SignUpProps> = ({
             name={name}
             label={label}
             isPassword={type === 'password'}
+            keyboardType={getKeyboardType(type)}
             {...field}
           />
         ))}
