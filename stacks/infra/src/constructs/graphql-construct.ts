@@ -9,7 +9,6 @@ import {
   IntrospectionConfig,
   SchemaFile,
 } from 'aws-cdk-lib/aws-appsync';
-import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import { TableV2 } from 'aws-cdk-lib/aws-dynamodb';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
@@ -19,7 +18,6 @@ import { Stage } from '../utils/enums';
 export interface GraphqlApiConstructProps extends GraphqlApiProps {
   readonly stageName: Stage;
   readonly schemaPath: string;
-  readonly userPool: UserPool;
 }
 
 export interface ResolverConfig {
@@ -32,7 +30,7 @@ export class GraphqlApiConstruct extends GraphqlApi {
   constructor(
     scope: Construct,
     id: string,
-    { stageName, schemaPath, userPool, ...props }: GraphqlApiConstructProps
+    { stageName, schemaPath, ...props }: GraphqlApiConstructProps
   ) {
     super(scope, id, {
       logConfig: {
@@ -57,10 +55,7 @@ export class GraphqlApiConstruct extends GraphqlApi {
       },
       authorizationConfig: {
         defaultAuthorization: {
-          authorizationType: AuthorizationType.USER_POOL,
-          userPoolConfig: {
-            userPool,
-          },
+          authorizationType: AuthorizationType.LAMBDA,
         },
       },
       ...props,
