@@ -1,37 +1,19 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
 import '@/styles/global.css';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { ClerkLoaded, ClerkProvider, useSession } from '@clerk/clerk-expo';
-import { tokenCache } from '@clerk/clerk-expo/token-cache';
+import { ClerkLoaded, useSession } from '@clerk/clerk-expo';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import Providers from './providers';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ClerkProvider
-      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
-      tokenCache={tokenCache}
-    >
-      <GluestackUIProvider mode="light">
-        <ThemeProvider
-          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-        >
-          <ClerkLoaded>
-            <RootNavigator />
-          </ClerkLoaded>
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </GluestackUIProvider>
-    </ClerkProvider>
+    <Providers>
+      <ClerkLoaded>
+        <RootNavigator />
+      </ClerkLoaded>
+      <StatusBar style="auto" />
+    </Providers>
   );
 }
 

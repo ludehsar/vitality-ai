@@ -7,9 +7,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { VStack } from '@/components/ui/vstack';
 import { Heading } from '@/components/ui/heading';
 import InputElement from '@/components/form-elements/input-element';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
 import PinInputElement from '@/components/form-elements/pin-input-element';
+import { ArrowLeftIcon } from '@/components/ui/icon';
 
 export const SignUpScreen = () => {
   const { signUp, setActive, isLoaded } = useSignUp();
@@ -68,6 +69,8 @@ export const SignUpScreen = () => {
       const isValid = await form.trigger(['code']);
       if (!isValid) return;
 
+      console.log('Code', form.getValues('code'));
+
       try {
         const signUpAttempt = await signUp.attemptEmailAddressVerification({
           code: form.getValues('code'),
@@ -104,17 +107,11 @@ export const SignUpScreen = () => {
                 autoCapitalize="none"
                 textContentType="emailAddress"
               />
-              <InputElement
-                name="password"
-                label="Password"
-                autoCapitalize="none"
-                textContentType="password"
-              />
+              <InputElement name="password" label="Password" isPassword />
               <InputElement
                 name="confirmPassword"
                 label="Confirm Password"
-                autoCapitalize="none"
-                textContentType="password"
+                isPassword
               />
             </>
           )}
@@ -126,6 +123,15 @@ export const SignUpScreen = () => {
           </Button>
         </FormProvider>
         <HStack className="justify-between">
+          {pendingVerification ? (
+            <Button
+              variant="link"
+              onPress={() => form.setValue('pendingVerification', false)}
+            >
+              <ButtonIcon as={ArrowLeftIcon} />
+              <ButtonText>Go back</ButtonText>
+            </Button>
+          ) : null}
           <Link href={'/sign-in'} asChild>
             <Button variant="link">
               <ButtonText>Already have an account?</ButtonText>
