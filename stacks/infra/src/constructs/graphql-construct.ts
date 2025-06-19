@@ -14,10 +14,12 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 import path from 'path';
 import { Stage } from '../utils/enums';
+import { IFunction } from 'aws-cdk-lib/aws-lambda';
 
 export interface GraphqlApiConstructProps extends GraphqlApiProps {
   readonly stageName: Stage;
   readonly schemaPath: string;
+  readonly authorizerFunction: IFunction;
 }
 
 export interface ResolverConfig {
@@ -30,7 +32,12 @@ export class GraphqlApiConstruct extends GraphqlApi {
   constructor(
     scope: Construct,
     id: string,
-    { stageName, schemaPath, ...props }: GraphqlApiConstructProps
+    {
+      stageName,
+      schemaPath,
+      authorizerFunction,
+      ...props
+    }: GraphqlApiConstructProps,
   ) {
     super(scope, id, {
       logConfig: {
@@ -56,6 +63,9 @@ export class GraphqlApiConstruct extends GraphqlApi {
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.LAMBDA,
+          lambdaAuthorizerConfig: {
+            handler: authorizerFunction,
+          },
         },
       },
       ...props,
@@ -69,11 +79,11 @@ export class GraphqlApiConstruct extends GraphqlApi {
 
   public registerDynamoDbResolvers(
     ddbTable: TableV2,
-    resolvers: ResolverConfig[]
+    resolvers: ResolverConfig[],
   ) {
     const dataSource = this.addDynamoDbDataSource(
       'SingleTableDDBDataSource',
-      ddbTable
+      ddbTable,
     );
     resolvers.forEach(({ typeName, fieldName, fileName }) => {
       dataSource.createResolver(fieldName, {
@@ -81,7 +91,7 @@ export class GraphqlApiConstruct extends GraphqlApi {
         fieldName,
         runtime: FunctionRuntime.JS_1_0_0,
         code: Code.fromAsset(
-          path.join(__dirname, '..', 'graphql', 'resolvers-compiled', fileName)
+          path.join(__dirname, '..', 'graphql', 'resolvers-compiled', fileName),
         ),
       });
     });
