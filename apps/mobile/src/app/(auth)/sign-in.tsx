@@ -1,61 +1,6 @@
-import { useSignIn } from '@clerk/clerk-expo';
-import { Link, useRouter } from 'expo-router';
+import { SignInScreen } from '@/features/auth';
 import React from 'react';
-import { VStack } from '@/components/ui/vstack';
-import { Text } from '@/components/ui/text';
-import { TextInput, TouchableOpacity, View } from 'react-native';
-import { Heading } from '@/components/ui/heading';
 
-export default function Page() {
-  const { signIn, setActive, isLoaded } = useSignIn();
-  const router = useRouter();
-
-  const [emailAddress, setEmailAddress] = React.useState('');
-  const [password, setPassword] = React.useState('');
-
-  const onSignInPress = async () => {
-    if (!isLoaded) return;
-
-    try {
-      const signInAttempt = await signIn.create({
-        identifier: emailAddress,
-        password,
-      });
-
-      if (signInAttempt.status === 'complete') {
-        await setActive({ session: signInAttempt.createdSessionId });
-        router.replace('/');
-      } else {
-        console.error(JSON.stringify(signInAttempt, null, 2));
-      }
-    } catch (err) {
-      console.error(JSON.stringify(err, null, 2));
-    }
-  };
-
-  return (
-    <VStack className="flex-1">
-      <Heading>Sign in</Heading>
-      <TextInput
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-      />
-      <TextInput
-        value={password}
-        placeholder="Enter password"
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <TouchableOpacity onPress={onSignInPress}>
-        <Text>Continue</Text>
-      </TouchableOpacity>
-      <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-        <Link href="/sign-up">
-          <Text>Sign up</Text>
-        </Link>
-      </View>
-    </VStack>
-  );
+export default function SignIn() {
+  return <SignInScreen />;
 }

@@ -20,8 +20,7 @@ export class BaseDynamoDBConstruct extends TableV2 {
   ) {
     super(scope, id, {
       billing: Billing.onDemand(),
-      removalPolicy:
-        stageName === Stage.PROD ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+      removalPolicy: stageName === Stage.PROD ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
       deletionProtection: stageName === Stage.PROD ? true : false,
       partitionKey: {
         name: 'PK',
