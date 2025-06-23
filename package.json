@@ -1,41 +1,20 @@
 {
-  "name": "@vitality-ai/source",
-  "version": "0.0.0",
-  "license": "MIT",
-  "scripts": {
-    "lint": "pnpm exec nx run-many --target=lint --all",
-    "prepare": "husky"
-  },
+  "name": "with-tailwind",
   "private": true,
-  "dependencies": {
-    "@berenddeboer/nx-aws-cdk": "3.0.0-alpha9",
-    "aws-cdk-lib": "2.189.1",
-    "constructs": "^10.4.2"
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "check-types": "turbo run check-types",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@eslint/js": "^9.8.0",
-    "@nx/eslint": "20.8.2",
-    "@nx/eslint-plugin": "20.8.2",
-    "@nx/js": "21.1.2",
-    "@swc-node/register": "~1.9.1",
-    "@swc/core": "~1.5.7",
-    "@swc/helpers": "~0.5.11",
-    "@types/node": "22.7.9",
-    "esbuild": "^0.25.5",
-    "eslint": "^9.8.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-typescript": "^18.0.0",
-    "eslint-config-prettier": "^10.0.0",
-    "eslint-plugin-prettier": "^5.4.1",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "husky": "^9.1.7",
-    "nx": "21.1.2",
     "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.4.1",
-    "ts-node": "^10.9.2",
-    "tslib": "^2.3.0",
-    "typescript": "~5.7.2",
-    "typescript-eslint": "^8.19.0"
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "turbo": "^2.5.4"
   },
-  "packageManager": "pnpm@10.10.0"
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18"
+  }
 }
